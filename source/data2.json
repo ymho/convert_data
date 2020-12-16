@@ -1,0 +1,86 @@
+[
+  {
+    "id": "urn:ngsi-ld:covid19:Patients:tokyo:1",
+    "type": "Patients",
+    "age": {
+      "type": "Text",
+      "value": "40代",
+      "metadata": {}
+    },
+    "cityName": {
+      "type": "Text",
+      "value": "",
+      "metadata": {}
+    },
+    "condition": {
+      "type": "Text",
+      "value": "",
+      "metadata": {}
+    },
+    "dayOfWeek": {
+      "type": "Text",
+      "value": "金",
+      "metadata": {}
+    },
+    "details": {
+      "type": "Text",
+      "value": "",
+      "metadata": {}
+    },
+    "discharged": {
+      "type": "Text",
+      "value": "1",
+      "metadata": {}
+    },
+    "gender": {
+      "type": "Text",
+      "value": "男性",
+      "metadata": {}
+    },
+    "no": {
+      "type": "Number",
+      "value": 1,
+      "metadata": {}
+    },
+    "onsetDate": {
+      "type": "Text",
+      "value": "",
+      "metadata": {}
+    },
+    "prefectureCode": {
+      "type": "Text",
+      "value": "130001",
+      "metadata": {}
+    },
+    "prefectureName": {
+      "type": "Text",
+      "value": "東京都",
+      "metadata": {}
+    },
+    "publishedDate": {
+      "type": "Text",
+      "value": "2020-01-24",
+      "metadata": {}
+    },
+    "remarks": {
+      "type": "Text",
+      "value": "",
+      "metadata": {}
+    },
+    "residence": {
+      "type": "Text",
+      "value": "湖北省武漢市",
+      "metadata": {}
+    },
+    "symptoms": {
+      "type": "Text",
+      "value": "",
+      "metadata": {}
+    },
+    "travelRecord": {
+      "type": "Text",
+      "value": "",
+      "metadata": {}
+    }
+  }
+]
