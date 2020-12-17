@@ -2,10 +2,14 @@ package main
 
 import (
 	"./src/ngsiv2/covid19"
+	bytes2 "bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/http"
+	"net/http/httputil"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -35,11 +39,7 @@ type Request struct {
 }
 
 func main() {
-	bytes, err := ioutil.ReadFile("./source/data.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	//fmt.Print(string(bytes))
+	bytes, _ := ioutil.ReadFile("./source/data.json")
 	var inputData InputData
 	if err := json.Unmarshal(bytes, &inputData); err != nil {
 		log.Fatal(err)
@@ -52,10 +52,10 @@ func main() {
 		}
 		age := ""
 		if strings.Index(data.AgeGender, "代") != -1 {
-			age = data.AgeGender[0:strings.Index(data.AgeGender, "代")]
+			age = data.AgeGender[0:strings.Index(data.AgeGender, "代")] + "代"
 		}
 		if strings.Index(data.AgeGender, "未満") != -1 {
-			age = data.AgeGender[0:strings.Index(data.AgeGender, "未満")]
+			age = data.AgeGender[0:strings.Index(data.AgeGender, "未満")] + "未満"
 		}
 		gender := ""
 		if (strings.Index(data.AgeGender, "男")) != -1 {
@@ -65,7 +65,7 @@ func main() {
 			gender = "女"
 		}
 		patient := covid19.Patient{
-			ID:             "urn:ngsi-ld:covid19:Patients:aichi:" + strconv.Itoa(index+1),
+			ID:             "urn:ngsi-ld:covid19:Patients:aichi:" + fmt.Sprintf("%07d", index+1),
 			Type:           "Patients",
 			Age:            covid19.Age{Type: "Text", Value: age},
 			CityName:       covid19.CityName{Type: "Text", Value: data.Livingin},
@@ -85,15 +85,29 @@ func main() {
 			TravelRecord:   covid19.TravelRecord{Type: "Text", Value: ""},
 		}
 		patients = append(patients, patient)
+
+		if ((index + 1) % 600) == 0 {
+			sendRequest(patients)
+			for i := len(patients) - 1; i >= 0; i-- {
+				patients = append(patients[:i], patients[i+1:]...)
+			}
+		}
 	}
-	sample_json, _ := json.MarshalIndent(patients, "", "  ")
-	fmt.Printf("%s\n", string(sample_json))
+	sendRequest(patients)
+}
 
-	//request := Request{
-	//	ActionType: "append",
-	//	Entities:   patients,
-	//}
-
-	//rq, _ := json.MarshalIndent(request,"","  ")
-
+func sendRequest(patients covid19.Patients) {
+	url := os.Getenv("FIWARE_ORION")
+	request := Request{
+		ActionType: "append",
+		Entities:   patients,
+	}
+	rq, _ := json.Marshal(request)
+	res, err := http.Post(url, "application/json", bytes2.NewBuffer(rq))
+	if err != nil {
+		log.Fatal(err)
+	}
+	dumpResp, _ := httputil.DumpResponse(res, true)
+	fmt.Printf("%s", dumpResp)
+	defer res.Body.Close()
 }
