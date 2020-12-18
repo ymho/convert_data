@@ -97,7 +97,7 @@ func main() {
 }
 
 func sendRequest(patients covid19.Patients) {
-	url := os.Getenv("FIWARE_ORION")
+	url := os.Getenv("FIWARE_ORION") + "/v2/op/update"
 	request := Request{
 		ActionType: "append",
 		Entities:   patients,
